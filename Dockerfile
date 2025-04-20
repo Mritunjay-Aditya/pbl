@@ -9,7 +9,6 @@
     COPY frontend/tailwind.config.js ./tailwind.config.js
     COPY frontend/src ./src
     COPY frontend/public ./public
-    COPY frontend/.env .env
     
     RUN npm run build
     
