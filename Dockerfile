@@ -12,6 +12,7 @@
     
     RUN npm run build
     
+    
     # --- Stage 2: Final Image with Frontend + Signaling Server ---
     FROM node:alpine3.19 AS final
     
@@ -22,8 +23,7 @@
     # Copy frontend build to nginx's static directory
     COPY --from=frontend-build /app/build /var/www/static
     
-    # Remove default config and add custom nginx config
-    RUN rm /etc/nginx/conf.d/default.conf
+    # Copy custom nginx config (no need to delete default.conf if it doesn't exist)
     COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
     
     # ---------------- Setup Signaling Server ----------------
@@ -37,7 +37,7 @@
     # ---------------- Setup Supervisor ----------------
     COPY supervisord.conf /etc/supervisord.conf
     
-    # Expose frontend (80) and signaling server (8001)
+    # Expose ports for nginx (80) and signaling server (8001)
     EXPOSE 80 8001
     
     CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
